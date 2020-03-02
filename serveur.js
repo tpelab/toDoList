@@ -1,7 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var count = 0;
-// Chargement du fichier index.html affiché au client
+// Load the html file
 var server = http.createServer(function(req, res) {
     fs.readFile('./index.html', 'utf-8', function(error, content) {
         res.writeHead(200, {"Content-Type": "text/html"});
@@ -9,12 +9,12 @@ var server = http.createServer(function(req, res) {
     });
 });
 
-// Chargement de socket.io
+// loading socket.io
 var io = require('socket.io').listen(server);
 
 io.sockets.on('connection', function (socket, pseudo) {
 	console.log("someone arrived");
-
+//we fetch & send the data when a new user is connected
 	socket.on('firstLoad', function(){
 		var content = fs.readFileSync('data.json', 'utf8');
 		var data = JSON.parse(content);
@@ -27,6 +27,7 @@ io.sockets.on('connection', function (socket, pseudo) {
 		socket.emit('update',str);
 	});
 
+	//we fetch the data, write the new task, and send
 	socket.on('newTask', function(name, task){
 		var content = fs.readFileSync('data.json', 'utf8');
 		var data = JSON.parse(content);
@@ -58,7 +59,7 @@ io.sockets.on('connection', function (socket, pseudo) {
 		socket.broadcast.emit('newCount',count);
 		socket.emit('newCount',count);
 	});
-
+	//we fetch the data, delete the task, and send
 	socket.on('suppression', function(number){
 		var content = fs.readFileSync('data.json', 'utf8');
 		var data = JSON.parse(content);
