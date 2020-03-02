@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+   <head>
+       <meta charset="utf-8" />
+       <title>ToDo</title>
+	   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+   </head>
+ 
+<body>
+
+	<p id="count"></p> <br>
+	<p id="tasks"></p>
+	Prénom : <input id="name" name="pseudo" autocomplete="off" >
+	Task : <input id="task" name="task" autocomplete="off">
+	<button id="envoyer">Envoyer</button>
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+var audio = new Audio("http://klubostkreuz.hopto.org/sisi.mp3");
+var socket = io.connect('http://klubostkreuz.hopto.org:8080');
+
+socket.on('connect', function(){
+	socket.emit('firstLoad');
+	socket.emit('newVisitor');
+	});
+	                // On demande le pseudo au visiteur...
+socket.on('newCount', function (x){
+	$("#count").text(x+ " online");
+	});
+socket.on('disconnect', function(){
+	socket.emit('disconnect');
+	});
+socket.on('update', function(data){
+
+	$("#tasks").html('');
+	$("#name").val('');
+	$("#task").val('');
+	$("#tasks").html(data);
+	$(".aSpan").click(function(){
+		var index = $(this).parent().attr("title");
+		socket.emit('suppression', index);
+	})
+	
+		});
+
+$("#envoyer").click(function(){
+	var username = $("#name").val();
+	var task = $("#task").val();
+	socket.emit('newTask', username, task);
+	});
+setInterval(function(){
+
+	if ($("#tasks").children().length == 0){
+     $("#tasks").html("Rien à faire !");
+}
+
+},100);
+</script>
+
+<style>
+
+body{
+padding:5px;
+margin:5px;
+}
+
+#count{
+	border: 2px solid blue;
+	border-radius: 12px;
+	display: inline;
+	padding:8px;
+	background-color: lightblue;
+}
+
+div{
+	background-color: skyblue;
+	border-radius: 10px;
+	display:inline-block;
+	padding:3px;
+	margin:7px;
+}
+
+p{margin:16px;}
+
+div span{
+margin: 15px 15px;
+font-size:30px;}
+
+
+</style>
+
+</body>
+
+
+
+
+</html>

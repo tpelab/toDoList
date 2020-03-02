@@ -1,0 +1,11 @@
+{
+    "name": "ma-todolist",
+    "version": "0.1.0",
+    "dependencies": {
+        "jquery": "^3.4.1",
+        "pm2": "^4.2.1",
+        "socket.io": "^2.3.0"
+    },
+    "author": "Thibette94",
+    "description": "Un gestionnaire de todolist ultra basique"
+}
